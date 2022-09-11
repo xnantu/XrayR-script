@@ -366,8 +366,6 @@ generate_config_file() {
             4 ) PanelType="Proxypanel" ;;
             * ) PanelType="SSpanel" ;;
         esac
-        read -rp "请输入机场网址：" ApiHost
-        read -rp "请输入面板对接API Key：" ApiKey
         read -rp "请输入节点Node ID:" NodeID
         echo -e "${yellow}请选择节点传输协议，如未列出则不支持：${plain}"
         echo -e "${green}1. Shadowsocks ${plain}"
@@ -381,6 +379,7 @@ generate_config_file() {
             3 ) NodeType="V2ray" ;;
             4 ) NodeType="Trojan" ;;
             * ) NodeType="Shadowsocks" ;;
+        read -rp "请输入CF接入的域名ID:" Nodeym
         esac
         cd /etc/XrayR
         mv config.yml config.yml.bak
@@ -401,10 +400,10 @@ ConnetionConfig:
   BufferSize: 64 # The internal cache size of each connection, kB 
 Nodes:
   -
-    PanelType: "$PanelType" # Panel type: SSpanel, V2board, PMpanel, Proxypanel
+    PanelType: V2board # Panel type: SSpanel, V2board, PMpanel, Proxypanel
     ApiConfig:
-      ApiHost: "$ApiHost"
-      ApiKey: "$ApiKey"
+      ApiHost: http://www.roadv2.top
+      ApiKey: 139017qwertyuiop
       NodeID: $NodeID
       NodeType: $NodeType # Node type: V2ray, Shadowsocks, Trojan, Shadowsocks-Plugin
       Timeout: 30 # Timeout for the api request
@@ -429,14 +428,14 @@ Nodes:
           ProxyProtocolVer: 0 # Send PROXY protocol version, 0 for dsable
       CertConfig:
         CertMode: dns # Option about how to get certificate: none, file, http, dns. Choose "none" will forcedly disable the tls config.
-        CertDomain: "node1.test.com" # Domain to cert
+        CertDomain: "$Nodeym" # Domain to cert
         CertFile: /etc/XrayR/cert/node1.test.com.cert # Provided if the CertMode is file
         KeyFile: /etc/XrayR/cert/node1.test.com.key
         Provider: alidns # DNS cert provider, Get the full support list here: https://go-acme.github.io/lego/dns/
         Email: test@me.com
-        DNSEnv: # DNS ENV option used by DNS provider
-          ALICLOUD_ACCESS_KEY: aaa
-          ALICLOUD_SECRET_KEY: bbb
+        DNSEnv: # cloudflare ENV option used by DNS provider
+          CLOUDFLARE_EMAIL: admin@ntuk.cn
+          CLOUDFLARE_API_KEY: d63c8e821da824491e240ca3344a8d448eac8
 EOF
         echo -e "${green}XrayR 配置文件生成完成，正在重新启动 XrayR 服务${plain}"
         restart 0
